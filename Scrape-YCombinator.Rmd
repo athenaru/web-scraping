@@ -1,0 +1,46 @@
+---
+title: "YCombinator-scrape"
+author: "Athena Ru"
+date: '2022-07-02'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r libraries, echo=FALSE}
+library(rvest)
+library(dplyr)
+library(stringr)
+library(htmltools)
+library(htmlwidgets)
+```
+
+## Read text from YCombinator "Ask HW" page
+
+```{r extract}
+link = "https://news.ycombinator.com/item?id=31582796"
+page = read_html(link) %>% 
+        html_nodes(".c00") %>%
+        html_text()
+comment <- str_trim(page)
+```
+
+
+## Extract Company Name
+
+```{r test-extract-company-name}
+comment <- c(comment)
+name <- str_extract(comment, "^[:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][|\\-]")
+```
+
+## Clean Name
+
+```{r clean-name}
+name_no_NA <- na.omit(name)
+name_remove <- str_replace(name_no_NA, "\\s{1}[|\\-]{1}|[|\\-]{1}\\s{1}[:graph:]+[:space:][:graph:]+", "")
+name_clean <- str_replace(name_remove, "\\s{1}[|]", "")
+```
+
