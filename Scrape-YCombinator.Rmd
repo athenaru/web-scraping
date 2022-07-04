@@ -16,6 +16,7 @@ library(dplyr)
 library(stringr)
 library(htmltools)
 library(htmlwidgets)
+library(reticulate)
 ```
 
 ## Read text from YCombinator "Ask HW" page
@@ -29,18 +30,16 @@ comment <- str_trim(page)
 ```
 
 
-## Extract Company Name
+## Extract First Line
 
-```{r test-extract-company-name}
-comment <- c(comment)
-name <- str_extract(comment, "^[:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][|\\-]|^[:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][:graph:]+[:space:][|\\-]")
+```{r test-extract-first-line}
+first_line <- str_extract(comment, "^[[[:graph:]^|]+[:space:]]+[|]{1}")
+first_no_NA <- na.omit(first_line)
 ```
 
-## Clean Name
+## Clean comments
 
-```{r clean-name}
-name_no_NA <- na.omit(name)
-name_remove <- str_replace(name_no_NA, "\\s{1}[|\\-]{1}|[|\\-]{1}\\s{1}[:graph:]+[:space:][:graph:]+", "")
-name_clean <- str_replace(name_remove, "\\s{1}[|]", "")
-```
+
+
+
 
