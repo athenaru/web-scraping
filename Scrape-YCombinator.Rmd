@@ -42,20 +42,102 @@ first_no_NA <- na.omit(first_line)
 ## Split First Line
 
 ```{python split}
-list3 = [w.split('|') for w in list1]
-for lst in list3:
+list1 = list(r.first_no_NA)
+
+list2 = [w.split('|') for w in list1]
+for lst in list2:
   lst.remove('')
-  lst = [i.strip() for i in lst]
-  
-name = [lst[0].strip() for lst in list3 if len(lst) > 3]
-position = [lst[1].strip() for lst in list3 if len(lst) > 3]
-location = [lst[2].strip() for lst in list3 if len(lst) > 3]
+```
+
+
+## Remove too-small entries
+
+```{python clean}
+list3 = [lst for lst in list2 if len(lst) > 1]
+```
+
+
+## Reorder entries
+
+```{python short}
+for lst in list3:
+  if len(lst) == 2:
+    lst.extend(["NULL", "NULL", "NULL"])
+  if len(lst) == 3:
+    lst.extend(["NULL", "NULL"])
+  if len(lst) == 4:
+    lst.append("NULL")
+```
+
+```{python reorder name}
+for lst in list3:
+  if ("Remote" in lst[0]) or ("Mentor" in lst[0]) or ("developer" in lst[0]):
+    lst.insert(0, "NULL")
+```
+
+```{python reorder position}
+for lst in list3:
+  if ("ngineer" in lst[2]) or ("oles" in lst[2]):
+    lst.insert(1, lst.pop(lst.index(lst[2])))
+```
+
+```{python reorder remote}
+for lst in list3:
+  if ("emote" in lst[1]) or ("EMOTE" in lst[1]):
+    lst.insert(3, lst.pop(lst.index(lst[1])))
+  if ("emote" in lst[2]) or ("EMOTE" in lst[2]):
+    lst.insert(3, lst.pop(lst.index(lst[2])))
+  if ("emote" in lst[4]) or ("EMOTE" in lst[4]):
+    lst[3], lst[4] = lst[4], lst[3]
+```
+
+```{python more reordering}
+for lst in list3:
+  if ("ngineer" in lst[1]) or ("grammer" in lst[1]) or ("echnical" in lst[1]) or ("eveloper" in lst[1]) or ("ultiple" in lst[1]) or ("cientist" in lst[1]) or ("omputer" in lst[1]) or ("roduct" in lst[1]) or ("oftware" in lst[1]) or ("ackend" in lst[1]):
+    pass
+  else:
+    lst[1], lst[4] = lst[4], lst[1]
+```
+
+```{python multiple roles}
+for lst in list3:
+  if ("ultiple" not in lst[2]) or ("ullstack" not in lst[2]) or ("cript" not in lst[2]) or ("ech" not in lst[2]) or ("ositions" not in lst[2]):
+    pass
+  else:
+    lst[1], lst[2] = lst[2], lst[1]
+```
+
+```{python add full-time}
+for lst in list3:
+  if "ull" in lst[2]:
+    lst[2], lst[4] = lst[4], lst[2]
+  else:
+    pass
+```
+
+```{python move big countries}
+for lst in list3:
+  if ("Germany" in lst[4]) or ("Belgium" in lst[4]) or ("Switzerland" in lst[4]) or ("Netherlands" in lst[4]) or ("Canada" in lst[4]) or ("rancisco" in lst[4]):
+    lst[2], lst[4] = lst[4], lst[2]
+  else:
+    pass
+```
+
+
+## Make Columns
+
+```{python}
+name = [lst[0].strip() for lst in list3]
+position = [lst[1].strip() for lst in list3]
+location = [lst[2].strip() for lst in list3]
+onORremote = [lst[3].strip() for lst in list3]
+other = [lst[4].strip() for lst in list3]
 ```
 
 ## Make dataframe
 
 ```{r dataframe}
-df <- data.frame(py$name, py$position, py$location, stringsAsFactors = FALSE)
+df <- data.frame(py$name, py$position, py$location, py$onORremote, py$other, stringsAsFactors = FALSE)
 ```
 
 ## Make csv file
@@ -63,5 +145,4 @@ df <- data.frame(py$name, py$position, py$location, stringsAsFactors = FALSE)
 ```{r csv}
 write.csv(df, "yCombinator.csv")
 ```
-
 
